@@ -47,7 +47,8 @@ def create_strings_from_wikipedia(minimum_length, count, lang):
         Create all string by randomly picking Wikipedia articles and taking sentences from them.
     """
     sentences = []
-
+    
+    sentence_dict = {}
     while len(sentences) < count:
         # We fetch a random page
 
@@ -74,9 +75,21 @@ def create_strings_from_wikipedia(minimum_length, count, lang):
                 ],
             )
         )
+        
+        lines = lines[0 : max([1, len(lines) - 5])]
+        new_lines = []
+        for line in lines:
+            if lang == 'it':
+                try:
+                    line.encode('ISO-8859-1')
+                    if sentence_dict.get(line) is None:
+                        new_lines.append(line)
+                        sentence_dict[line] = 1
+                except:
+                    pass
 
         # Remove the last lines that talks about contributing
-        sentences.extend(lines[0: max([1, len(lines) - 5])])
+        sentences.extend(new_lines)
 
     return sentences[0:count]
 
